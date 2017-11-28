@@ -21,6 +21,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from mi_api import views
 
 urlpatterns = [
+    url(r'^$', views.verCatalogos, name='verCatalogos'),
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^catalogos/',views.catalogos.as_view() ),
@@ -29,7 +30,6 @@ urlpatterns = [
     url(r'^area/(?P<id>[0-9]+)/$', views.AreasDetail.as_view()),
     url(r'^items/',views.Item.as_view() ),
     url(r'^item/(?P<id>[0-9]+)/$', views.ItemDetail.as_view()),
-    url(r'^ver_catalogos/$', views.custom404, name='custom404'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

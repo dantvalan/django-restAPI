@@ -10,9 +10,9 @@ from django.template import RequestContext, loader
 
 
 
-def custom404(request):
+def verCatalogos(request):
     # logg().debug("Generando un registro en el log de Django")
-    template = loader.get_template("404.html")
+    template = loader.get_template("verCatalogos.html")
     context = {
         'titulo': "Admin Incidencias",
     }
