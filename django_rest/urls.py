@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api_catalogos/',views.catalogos.as_view() ),
+    url(r'^api_areas/',views.Areas.as_view() ),
+    url(r'^api_items/',views.Item.as_view() ),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -69,5 +69,129 @@ class catalogos(APIView):
 				return Response("el catalogo es obligatorio", status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes((permissions.AllowAny,))
+class Areas(APIView):
+
+	def get(self, request, format=None):
+		cat = Area.objects.all()
+		content = { 'Areas': [ obj.rJSON() for obj in cat ] }
+		return Response(content)
+
+	def post(self, request, format=None):
+		data = request.data
+		try:
+			if "Area" in data:
+				for c in data["Area"]:
+					new_Area = Area()
+					if "nombre" in c:
+						new_Area.nombre = c["nombre"]
+					if "item_id" in c:
+						new_Area.item = Items.objects.get(id=c["item_id"])
+					new_Area.save()
+				return Response(new_Area.rJSON())
+			else:
+				return Response("el Area es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+	def put(self, request, format=None):
+		data = request.data
+		try:
+			if "Area" in data:
+				for c in data["Area"]:
+					if "id" in c:
+						up_Area = Area.objects.get(pk = c["id"])
+						if "nombre" in c:
+							up_Area.nombre = c["nombre"]
+						if "item_id" in c:
+							up_Area.item = Items.objects.get(id=c["item_id"])
+						up_Area.save()
+						return Response(up_Area.rJSON())
+					else:
+						return Response("el id del Area", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response("el Area es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+	def delete(self, request, format=None):
+		data = request.data
+		try:
+			if "Area" in data:
+				for c in data["Area"]:
+					if "id" in c:
+						d_Area = Area.objects.get(pk = c["id"])
+						d_Area.delete()
+						return Response(status=status.HTTP_204_NO_CONTENT)
+					else:
+						return Response("el id del Area", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response("el Area es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes((permissions.AllowAny,))
+class Item(APIView):
+
+	def get(self, request, format=None):
+		cat = Items.objects.all()
+		content = { 'Items': [ obj.rJSON() for obj in cat ] }
+		return Response(content)
+
+	def post(self, request, format=None):
+		data = request.data
+		try:
+			if "Items" in data:
+				for c in data["Items"]:
+					new_Items = Items()
+					if "nombre" in c:
+						new_Items.nombre = c["nombre"]
+					new_Items.save()
+				return Response(new_Items.rJSON())
+			else:
+				return Response("el Items es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+	def put(self, request, format=None):
+		data = request.data
+		try:
+			if "Items" in data:
+				for c in data["Items"]:
+					if "id" in c:
+						up_Items = Items.objects.get(pk = c["id"])
+						if "nombre" in c:
+							up_Items.nombre = c["nombre"]
+						up_Items.save()
+						return Response(up_Items.rJSON())
+					else:
+						return Response("el id del Items", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response("el Items es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
+	def delete(self, request, format=None):
+		data = request.data
+		try:
+			if "Items" in data:
+				for c in data["Items"]:
+					if "id" in c:
+						d_Items = Items.objects.get(pk = c["id"])
+						d_Items.delete()
+						return Response(status=status.HTTP_204_NO_CONTENT)
+					else:
+						return Response("el id del Items", status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response("el Items es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 			
 		
