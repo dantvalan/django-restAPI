@@ -2,13 +2,19 @@ version: '3'
 
 services:
   db:
+    restart: always
     image: postgres
+    #volumes:
+     # - ./posdata/:/var/lib/postgresql/data
+    depends_on:
+      - web
   web:
+    restart: always
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: bash -c "python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
+      - ./templates:/templates
+      - ./django_rest/static:/django_rest/static
     ports:
       - "8000:8000"
-    depends_on:
-      - db

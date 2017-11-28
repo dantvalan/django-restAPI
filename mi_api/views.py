@@ -1,11 +1,22 @@
 from mi_api.models import *
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions
+from django.template import RequestContext, loader
 
+
+
+
+def custom404(request):
+    # logg().debug("Generando un registro en el log de Django")
+    template = loader.get_template("404.html")
+    context = {
+        'titulo': "Admin Incidencias",
+    }
+    return HttpResponse(template.render(context))
 
 @permission_classes((permissions.AllowAny,))
 class catalogos(APIView):
@@ -103,8 +114,9 @@ class AreasDetail(APIView):
 
 	def get(self, request, id, format=None):
 		try:
-			ar = Area.objects.get(pk = id)
-			return Response(ar.rJSON())
+			ar = Area.objects.filter(catalogo__id = id)
+			content = { 'Areas': [ obj.rJSON() for obj in ar ] }
+			return Response(content)
 		except Area.DoesNotExist:
 			return Response("El Area no existe.", status=status.HTTP_404_NOT_FOUND)
 
@@ -172,8 +184,9 @@ class ItemDetail(APIView):
 
 	def get(self, request, id, format=None):
 		try:
-			itm = Items.objects.get(pk = id)
-			return Response(itm.rJSON())
+			itm = Items.objects.filter(area__id = id)
+			content = { 'Items': [ obj.rJSON() for obj in itm ] }
+			return Response(content)
 		except Items.DoesNotExist:
 			return Response("El Item no existe.", status=status.HTTP_404_NOT_FOUND)
 

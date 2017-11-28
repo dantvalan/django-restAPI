@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^area/(?P<id>[0-9]+)/$', views.AreasDetail.as_view()),
     url(r'^items/',views.Item.as_view() ),
     url(r'^item/(?P<id>[0-9]+)/$', views.ItemDetail.as_view()),
+    url(r'^ver_catalogos/$', views.custom404, name='custom404'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
