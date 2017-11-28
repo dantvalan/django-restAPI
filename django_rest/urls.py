@@ -23,9 +23,12 @@ from mi_api import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api_catalogos/',views.catalogos.as_view() ),
-    url(r'^api_areas/',views.Areas.as_view() ),
-    url(r'^api_items/',views.Item.as_view() ),
+    url(r'^catalogos/',views.catalogos.as_view() ),
+    url(r'^catalogo/(?P<id>[0-9]+)/$', views.catalogosDetail.as_view()),
+    url(r'^areas/',views.Areas.as_view() ),
+    url(r'^area/(?P<id>[0-9]+)/$', views.AreasDetail.as_view()),
+    url(r'^items/',views.Item.as_view() ),
+    url(r'^item/(?P<id>[0-9]+)/$', views.ItemDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

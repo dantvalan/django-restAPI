@@ -23,8 +23,6 @@ class catalogos(APIView):
 					new_catalogo = Catalogo()
 					if "nombre" in c:
 						new_catalogo.nombre = c["nombre"]
-					if "area_id" in c:
-						new_catalogo.area = Area.objects.get(id=c["area_id"])
 					new_catalogo.save()
 				return Response(new_catalogo.rJSON())
 			else:
@@ -32,18 +30,26 @@ class catalogos(APIView):
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
+@permission_classes((permissions.AllowAny,))
+class catalogosDetail(APIView):
 
-	def put(self, request, format=None):
+	def get(self, request, id, format=None):
+		try:
+			cat = Catalogo.objects.get(pk = id)
+			return Response(cat.rJSON())
+		except Catalogo.DoesNotExist:
+			return Response("El Catalogo no existe.", status=status.HTTP_404_NOT_FOUND)
+
+
+	def put(self, request, id, format=None):
 		data = request.data
 		try:
 			if "catalogo" in data:
 				for c in data["catalogo"]:
-					if "id" in c:
-						up_catalogo = Catalogo.objects.get(pk = c["id"])
+					if id:
+						up_catalogo = Catalogo.objects.get(pk = id)
 						if "nombre" in c:
 							up_catalogo.nombre = c["nombre"]
-						if "area_id" in c:
-							up_catalogo.area = Area.objects.get(id=c["area_id"])
 						up_catalogo.save()
 						return Response(up_catalogo.rJSON())
 					else:
@@ -54,19 +60,15 @@ class catalogos(APIView):
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
-	def delete(self, request, format=None):
+	def delete(self, request, id, format=None):
 		data = request.data
 		try:
-			if "catalogo" in data:
-				for c in data["catalogo"]:
-					if "id" in c:
-						d_catalogo = Catalogo.objects.get(pk = c["id"])
-						d_catalogo.delete()
-						return Response(status=status.HTTP_204_NO_CONTENT)
-					else:
-						return Response("el id del catalogo", status=status.HTTP_400_BAD_REQUEST)
+			if id:
+				d_catalogo = Catalogo.objects.get(pk = id)
+				d_catalogo.delete()
+				return Response(status=status.HTTP_204_NO_CONTENT)
 			else:
-				return Response("el catalogo es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+				return Response("el id del catalogo", status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
@@ -87,8 +89,8 @@ class Areas(APIView):
 					new_Area = Area()
 					if "nombre" in c:
 						new_Area.nombre = c["nombre"]
-					if "item_id" in c:
-						new_Area.item = Items.objects.get(id=c["item_id"])
+					if "catalogo_id" in c:
+						new_Area.catalogo = Catalogo.objects.get(id=c["catalogo_id"])
 					new_Area.save()
 				return Response(new_Area.rJSON())
 			else:
@@ -96,18 +98,27 @@ class Areas(APIView):
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
+@permission_classes((permissions.AllowAny,))
+class AreasDetail(APIView):
 
-	def put(self, request, format=None):
+	def get(self, request, id, format=None):
+		try:
+			ar = Area.objects.get(pk = id)
+			return Response(ar.rJSON())
+		except Area.DoesNotExist:
+			return Response("El Area no existe.", status=status.HTTP_404_NOT_FOUND)
+
+	def put(self, request, id, format=None):
 		data = request.data
 		try:
 			if "Area" in data:
 				for c in data["Area"]:
-					if "id" in c:
-						up_Area = Area.objects.get(pk = c["id"])
+					if id:
+						up_Area = Area.objects.get(pk = id)
 						if "nombre" in c:
 							up_Area.nombre = c["nombre"]
-						if "item_id" in c:
-							up_Area.item = Items.objects.get(id=c["item_id"])
+						if "catalogo_id" in c:
+							up_Area.catalogo = Catalogo.objects.get(id=c["catalogo_id"])
 						up_Area.save()
 						return Response(up_Area.rJSON())
 					else:
@@ -118,19 +129,15 @@ class Areas(APIView):
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
-	def delete(self, request, format=None):
+	def delete(self, request, id, format=None):
 		data = request.data
 		try:
-			if "Area" in data:
-				for c in data["Area"]:
-					if "id" in c:
-						d_Area = Area.objects.get(pk = c["id"])
-						d_Area.delete()
-						return Response(status=status.HTTP_204_NO_CONTENT)
-					else:
-						return Response("el id del Area", status=status.HTTP_400_BAD_REQUEST)
+			if id:
+				d_Area = Area.objects.get(pk = id)
+				d_Area.delete()
+				return Response(status=status.HTTP_204_NO_CONTENT)
 			else:
-				return Response("el Area es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+				return Response("el id del Area", status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
@@ -151,6 +158,8 @@ class Item(APIView):
 					new_Items = Items()
 					if "nombre" in c:
 						new_Items.nombre = c["nombre"]
+					if "area_id" in c:
+						new_Items.area = Area.objects.get(pk = c["area_id"])
 					new_Items.save()
 				return Response(new_Items.rJSON())
 			else:
@@ -158,16 +167,27 @@ class Item(APIView):
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
+@permission_classes((permissions.AllowAny,))
+class ItemDetail(APIView):
 
-	def put(self, request, format=None):
+	def get(self, request, id, format=None):
+		try:
+			itm = Items.objects.get(pk = id)
+			return Response(itm.rJSON())
+		except Items.DoesNotExist:
+			return Response("El Item no existe.", status=status.HTTP_404_NOT_FOUND)
+
+	def put(self, request, id, format=None):
 		data = request.data
 		try:
 			if "Items" in data:
 				for c in data["Items"]:
-					if "id" in c:
-						up_Items = Items.objects.get(pk = c["id"])
+					if id:
+						up_Items = Items.objects.get(pk = id)
 						if "nombre" in c:
 							up_Items.nombre = c["nombre"]
+						if "area_id" in c:
+							up_Items.area = Area.objects.get(pk = c["area_id"])
 						up_Items.save()
 						return Response(up_Items.rJSON())
 					else:
@@ -178,19 +198,15 @@ class Item(APIView):
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
-	def delete(self, request, format=None):
+	def delete(self, request, id, format=None):
 		data = request.data
 		try:
-			if "Items" in data:
-				for c in data["Items"]:
-					if "id" in c:
-						d_Items = Items.objects.get(pk = c["id"])
-						d_Items.delete()
-						return Response(status=status.HTTP_204_NO_CONTENT)
-					else:
-						return Response("el id del Items", status=status.HTTP_400_BAD_REQUEST)
+			if id:
+				d_Items = Items.objects.get(pk = id)
+				d_Items.delete()
+				return Response(status=status.HTTP_204_NO_CONTENT)
 			else:
-				return Response("el Items es obligatorio", status=status.HTTP_400_BAD_REQUEST)
+				return Response("el id del Items", status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
 			return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 			

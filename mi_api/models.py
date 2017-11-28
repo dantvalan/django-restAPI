@@ -2,7 +2,6 @@ from django.db import models
 
 class Catalogo(models.Model):
 	nombre = models.CharField(max_length=1024, blank=True)
-	area = models.ForeignKey("Area")
 
 	class Meta:
 		ordering = ["id"]
@@ -18,7 +17,7 @@ class Catalogo(models.Model):
 
 class Area(models.Model):
 	nombre = models.CharField(max_length=1024, blank=True)
-	item = models.ForeignKey("Items")
+	catalogo = models.ForeignKey("Catalogo", null=True)
 
 	class Meta:
 		ordering = ["id"]
@@ -29,11 +28,13 @@ class Area(models.Model):
 	def rJSON(self):
 		return{
 		 "id": self.id,
-		 "nombre": self.nombre
+		 "nombre": self.nombre,
+		 "catalogo": self.catalogo.nombre if self.catalogo else "",
 		}
 
 class Items(models.Model):
 	nombre = models.CharField(max_length=1024, blank=True)
+	area = models.ForeignKey("Area", null=True)
 
 	class Meta:
 		ordering = ["id"]
@@ -44,7 +45,8 @@ class Items(models.Model):
 	def rJSON(self):
 		return{
 		 "id": self.id,
-		 "nombre": self.nombre
+		 "nombre": self.nombre,
+		 "area": self.area.nombre if self.area else "",
 		}
 		
 			
